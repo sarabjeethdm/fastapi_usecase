@@ -3,38 +3,47 @@ from bson import ObjectId
 from app.db.mongodb import get_collection
 
 
-def serialize_doc(doc):
+def serialize(doc):
     doc["_id"] = str(doc["_id"])
     return doc
 
 
-def create_document(collection_name: str, data: dict):
-    collection = get_collection(collection_name)
-    result = collection.insert_one(data)
+async def create_document(collection: str, data: dict):
+    col = get_collection(collection)
+    result = await col.insert_one(data)
     return str(result.inserted_id)
 
 
-def get_document(collection_name: str, document_id: str):
-    collection = get_collection(collection_name)
-    doc = collection.find_one({"_id": ObjectId(document_id)})
-    if doc:
-        return serialize_doc(doc)
-    return None
+async def get_document(collection: str, id: str):
+    col = get_collection(collection)
+    doc = await col.find_one({"_id": ObjectId(id)})
+    return serialize(doc) if doc else None
 
 
-def get_all_documents(collection_name: str):
-    collection = get_collection(collection_name)
-    docs = collection.find()
-    return [serialize_doc(doc) for doc in docs]
+async def get_by_field(collection: str, field: str, value):
+    col = get_collection(collection)
+    doc = await col.find_one({field: value})
+    return serialize(doc) if doc else None
 
 
-def update_document(collection_name: str, document_id: str, data: dict):
-    collection = get_collection(collection_name)
-    result = collection.update_one({"_id": ObjectId(document_id)}, {"$set": data})
+async def update_document(collection: str, id: str, data: dict):
+    col = get_collection(collection)
+    result = await col.update_one({"_id": ObjectId(id)}, {"$set": data})
     return result.modified_count
 
 
-def delete_document(collection_name: str, document_id: str):
-    collection = get_collection(collection_name)
-    result = collection.delete_one({"_id": ObjectId(document_id)})
+async def delete_document(collection: str, id: str):
+    col = get_collection(collection)
+    result = await col.delete_one({"_id": ObjectId(id)})
     return result.deleted_count
+
+
+async def get_all_documents(collection: str):
+    col = get_collection(collection)
+    cursor = col.find()
+    documents = []
+
+    async for doc in cursor:
+        documents.append(serialize(doc))
+
+    return documents
