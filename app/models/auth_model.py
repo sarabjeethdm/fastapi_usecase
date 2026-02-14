@@ -1,3 +1,5 @@
+# app/models/auth_model.py
+
 from pydantic import BaseModel, EmailStr
 
 

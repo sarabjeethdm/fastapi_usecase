@@ -1,3 +1,5 @@
+# app/api/auth_route.py
+
 from fastapi import APIRouter, HTTPException
 
 from app.models.auth_model import LoginModel, RegisterModel

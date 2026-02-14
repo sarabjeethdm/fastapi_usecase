@@ -1,3 +1,5 @@
+# app/services/auth_service.py
+
 from app.core.security import create_access_token, hash_password, verify_password
 from app.db.base import create_document, get_by_field
 

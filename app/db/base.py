@@ -1,3 +1,5 @@
+# app/db/base.py
+
 from bson import ObjectId
 
 from app.db.mongodb import get_collection
