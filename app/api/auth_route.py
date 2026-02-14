@@ -1,6 +1,6 @@
 # app/api/auth_route.py
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Response
 
 from app.models.auth_model import LoginModel, RegisterModel
 from app.services.auth_service import login_user, register_user
@@ -17,8 +17,15 @@ async def register(data: RegisterModel):
 
 
 @router.post("/login")
-async def login(data: LoginModel):
+async def login(data: LoginModel, response: Response):
     token = await login_user(data.email, data.password)
     if not token:
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    return {"access_token": token}
+
+    response.set_cookie(
+        key="access_token",
+        value=token,
+        httponly=True,  # prevents JS access
+        samesite="lax",  # adjust for frontend
+    )
+    return {"message": "Logged in"}

@@ -1,6 +1,6 @@
 # app/api/user_route.py
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from app.models.user_model import UserCreate
 from app.services.user_service import (
     create_user,
@@ -9,8 +9,9 @@ from app.services.user_service import (
     get_users,
     update_user,
 )
+from app.core.dependencies import get_current_user
 
-router = APIRouter(prefix="/users", tags=["Users"])
+router = APIRouter(prefix="/users", tags=["Users"], dependencies=[Depends(get_current_user)])
 
 
 @router.post("/")

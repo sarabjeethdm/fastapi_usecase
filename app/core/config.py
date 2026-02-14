@@ -12,6 +12,7 @@ class Settings:
     DB_NAME: str = os.getenv("DB_NAME")
     SECRET_KEY: str = os.getenv("SECRET_KEY")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
+    ALGORITHM: str = os.getenv("ALGORITHM")
 
 
 settings = Settings()
